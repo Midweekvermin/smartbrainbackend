@@ -1,10 +1,12 @@
 // initial skeleton for skeleton for server
 const express = require('express');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
+app.use(cors());
 
 const database ={
     users: [
@@ -28,23 +30,20 @@ const database ={
 }
 
 app.get('/', (req, res) => {
-    res.send('this is working')
+    res.send(database.users);
 })
 
 app.post('/signin', (req,res) => {
-    bcrypt.compare(password, hash, function(err, hash) {
-
-    });
     if(req.body.email === database.users[0].email &&
          req.body.password === database.users[0].password){
-    res.json('signing in')
+    res.json('signingin')
          } else {
             res.status(400).json('incorrect login')
          }
 })
 
 app.post('/register', (req,res) => {
-    const {email, name, password} = rew.body;
+    const {email, name, password} = req.body;
     bcrypt.compare( password, hash, function(err, hash) {
         console.log(hash);
     });
@@ -88,10 +87,10 @@ app.put('/image', (req,res) =>{
     }
 })
 
-bcrypt.compare("bacon", hash, function(err, hash) {
+bcrypt.compare("bacon", 'hash', function(err, hash) {
 
 });
-bcrypt.compare("veggies", hash, function(err, res) {
+bcrypt.compare("veggies", 'hash', function(err, res) {
 
 });
 
