@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 const database ={
-    users: [
+    user: [
         {
             id: '123',
             name: 'John',
@@ -34,9 +34,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req,res) => {
-    if(req.body.email === database.users[0].email &&
-         req.body.password === database.users[0].password){
-    res.json('signingin')
+    if(req.body.email === database.user[0].email &&
+         req.body.password === database.user[0].password){
+    res.json(database.user[0])
          } else {
             res.status(400).json('incorrect login')
          }
@@ -44,24 +44,20 @@ app.post('/signin', (req,res) => {
 
 app.post('/register', (req,res) => {
     const {email, name, password} = req.body;
-    bcrypt.compare( password, hash, function(err, hash) {
-        console.log(hash);
-    });
-database.users.push({
+database.user.push({
 id:'125',
 name: name,
 email: email,
-password: password,
 entries: 0,
 joined: new Date()
     })
-    res.json(database.users[database.users.length-1]);
+    res.json(database.user[database.user.length-1]);
 })
 
 app.get('/profile/:id', (req,res) => {
     const {id} = req.params;
     let found = false;
-    database.users.forEach(users => {
+    database.user.forEach(users => {
         if (users.id === id) {
             found = true;
            return res.json(users);
@@ -75,7 +71,7 @@ app.get('/profile/:id', (req,res) => {
 app.put('/image', (req,res) =>{
     const {id} = req.body;
     let found = false;
-    database.users.forEach(users => {
+    database.user.forEach(users => {
         if (users.id === id) {
             found=true;
             users.entries++
