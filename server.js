@@ -30,7 +30,7 @@ const database ={
 }
 
 app.get('/', (req, res) => {
-    res.send(database.users);
+    res.send(database.user);
 })
 
 app.post('/signin', (req,res) => {
