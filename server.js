@@ -1,4 +1,10 @@
 const express = require('express');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const hostname = 'www.midweekvermin.com';
+const httpPort = 80;
+const httpsPort = 443;
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const path = require('path');
@@ -13,6 +19,14 @@ const db = knex({
     }
 });
 
+const httpsOptions = {
+    cert: fs.readFileSync('www.midweekvermin.com.crt'),
+    key: fs.readFileSync('www.midweekvermin.com.pem'),
+    ca: fs.readFileSync('www.midweekvermin.com.ca')
+  
+
+};
+
 db.select('*').from('user');
 
 const app = express();
@@ -20,6 +34,16 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'build')));
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(httpsOptions, app);
+
+app.use((req, res, next) => {
+    if(req.protocol === 'http') {
+        res.redirect(301, `https://${req.headers.host}${req.url}`);
+    } else {
+    next();  
+    }
+})
 
 
 
@@ -98,4 +122,5 @@ app.put('/image', (req,res) =>{
 })
 
 
-app.listen(80)
+httpServer.listen(httpPort);
+httpsServer.listen(httpsPort);
